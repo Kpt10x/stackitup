@@ -1,5 +1,9 @@
+// backend/index.js
+
 import express from 'express';
 import cors from 'cors';
+
+// Import dotenv for ES module compatibility
 import dotenv from 'dotenv';
 
 import connectDB from './config/db.js';
@@ -13,11 +17,22 @@ import { fileURLToPath } from 'url';
 import http from 'http';
 import { Server } from 'socket.io';
 
-// Load environment variables from .env file
-dotenv.config();
+// Get __filename and __dirname for ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load environment variables from .env file using ES module syntax
+// It's good practice to explicitly define the path in ES Modules
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
+// --- Add these console logs for debugging purposes ---
+console.log('MONGODB_URI from .env:', process.env.MONGODB_URI);
+console.log('PORT from .env:', process.env.PORT);
+// --- End debug logs ---
 
 // Connect to MongoDB
-connectDB();
+connectDB(); // Assuming connectDB uses process.env.MONGODB_URI internally
 
 const app = express();
 const server = http.createServer(app);
@@ -37,7 +52,7 @@ app.use(express.json());
 // Middleware to attach io instance to req
 app.use((req, res, next) => {
   req.io = io;
-  req.getUser = getUser;
+  req.getUser = getUser; // Assuming getUser is defined somewhere accessible, if not, move its definition up
   next();
 });
 
@@ -86,8 +101,6 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/notifications', notificationRoutes);
 
 // Make 'uploads' directory static
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Root route (optional)

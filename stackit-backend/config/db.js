@@ -6,7 +6,7 @@ dotenv.config();
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI, {
+    const conn = await mongoose.connect(process.env.MONGODB_URI, {
       // Mongoose 6+ default options are good, so no need for useNewUrlParser, etc.
       // However, it's good practice to be explicit about the database name if not in the URI
       dbName: 'stackit_db'
